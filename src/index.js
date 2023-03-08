@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { mdLinks } from './actions';
+import { mdLinks } from './functions';
 
 const program = new Command();
 
