@@ -1,29 +1,18 @@
-const { Command } = require('commander');
+import { Command } from 'commander';
+import { mdLinks } from './actions';
+
 const program = new Command();
 
 program
-  .name('string-util')
-  .description('CLI to some JavaScript string utilities')
-  .version('0.8.0');
+  .name('md-links')
+  .description('CLI para evaluar links dentro de archivos Markdown')
+  .version('0.0.1');
 
-program.command('split')
-  .description('Split a string into substrings and display as an array')
-  .argument('<string>', 'string to split')
-  .option('--first', 'display just the first substring')
-  .option('-s, --separator <char>', 'separator character', ',')
-  .action((str, options) => {
-    const limit = options.first ? 1 : undefined;
-    console.log(str.split(options.separator, limit));
-  });
-
-  program.command('path')
-  .description('Split a string into substrings and display as an array')
-  .argument('<string>', 'string to split')
-  .option('--first', 'display just the first substring')
-  .option('-s, --separator <char>', 'separator character', ',')
-  .action((str, options) => {
-    const limit = options.first ? 1 : undefined;
-    console.log(str.split(options.separator, limit));
-  });
+  program.command('*')
+  .description('Verifica los links en un archivo Markdown que contengan y reportar algunas estadísticas.')
+  .argument('<path-to-file>', 'Ruta absoluta o relativa al archivo o directorio.')
+  .option('--validate' , 'Booleano que determina si se desea validar los links encontrados.', false)
+  .option('--stats', 'Genera una salida con estadísticas básicas sobre los links.')
+  .action(mdLinks);
 
 program.parse();
