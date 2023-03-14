@@ -1,29 +1,35 @@
-import fs from 'fs';
-import path from 'path';
+import fs, { link, promises } from 'fs';
+
 
 export const mdLinks = (filePath, options) => {
-  console.log(filePath);
   console.log(`Existe la ruta? ${filePath} : ${fs.existsSync(filePath)}`);
-  console.log(`Es Absoluta? ${path.isAbsolute(filePath)}`);
-  fs.readFile(filePath, 'utf8', function (err, data) {
-    console.log(data);
-    const regex = /(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}([a-z0-9\-\/\.\#\_?=&]*)?/igm;
-    const matches = data.match(regex);
-    
+  // console.log(`Es Absoluta? ${path.isAbsolute(filePath)}`);
+  const linksPromise = getLinks(filePath);
+  // console.log(linksPromise);
+  if (!options.validate) {
+    return linksPromise;
+  } else {
+    return linksPromise.then(links => {
+      console.log(links);
+      links.forEach(link => {
+        // console.log(link.href);
+      });
+    });
+  };
+}
 
-    console.log(matches);
-  });
+function getLinks(filePath) {
+  return promises
+    .readFile(filePath, { encoding: 'utf8' })
+    .then(function (data) {
+      const regexLink =
+        /\[(?<text>.+)\]\((?<href>(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}([a-z0-9\-\/\.\#\_?=&]*)?)\)/gim;
 
-  // console.log(fs.readdirSync(filePath));
-
-  // const pathExist = (filePath) => {
-  //   return fs.existsSync(filePath);
-  // }
-  // console.log(`Existe la ruta? ${filePath} : ${pathExist(filePath)}`);
-  // console.log('\nCurrent directory filenames:');
-  // console.log(path.isAbsolute(filePath));
-  // filenames.forEach((file) => {
-  //   console.log(file);
-  //   console.log(__dirname);
-  // });
-};
+      const matches = Array.from(data.matchAll(regexLink));
+      const linksArray = matches.map((match) => ({
+        ...match.groups,
+        file: filePath,
+      }));
+      return linksArray;
+    });
+}
