@@ -20,20 +20,29 @@ program
   .option(
     '--validate',
     'Booleano que determina si se desea validar los links encontrados.',
-    false,
+    false
   )
   .option(
     '--stats',
     'Genera una salida con estadísticas básicas sobre los links.'
   )
   .action((filePath, options) => {
-    mdLinks(filePath, options).then(links => {
-      links.forEach(link => {
-        const validateOutput = options.validate ? ` ${link.ok} ${link.status}` : ""
-        const output = `${link.file} ${link.href}${validateOutput} "${link.text}"`;
-        console.log(output);
-      });
+    mdLinks(filePath, options).then((data) => {
+      if (!options.stats) {
+        data.forEach((link) => {
+          const validateOutput = options.validate
+            ? ` ${link.ok} ${link.status}`
+            : '';
+          const output = `${link.file} ${link.href}${validateOutput} "${link.text}"`;
+          console.log(output);
+        });
+      } else {
+        console.log(`Total: ${data.totalLength}`);
+        console.log(`Unique: ${data.unique}`);
+        if (options.validate) {
+          console.log(`Broken: ${data.broken}`);
+        }
+      }
     });
   });
-
 program.parse();

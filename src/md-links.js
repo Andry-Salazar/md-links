@@ -7,12 +7,21 @@ export const mdLinks = (filePath, options) => {
     return links;
   });
 
-  if (!options.validate) {
-    return linksPromise;
-  } else {
-    return validate(linksPromise);
+  const linksResult = !options.validate ? linksPromise : validate(linksPromise);
+
+  if (!options.stats) {
+    return linksResult;
   }
 
+  return linksResult.then((links) => {
+    return {
+      totalLength: links.length,
+      unique: new Set(links.map(({ href }) => href)).size,
+      broken: options.validate
+        ? links.filter(({ ok }) => ok === 'fail').length
+        : 0,
+    };
+  });
 };
 
 function getLinks(filePath) {
@@ -31,7 +40,7 @@ function getLinks(filePath) {
     });
 }
 
-function fecthLink(endpoint) {
+function fetchLink(endpoint) {
   return fetch(endpoint)
     .then(function (response) {
       return { status: response.status, ok: response.statusText.toLowerCase() };
@@ -47,7 +56,7 @@ function fecthLink(endpoint) {
 function validate(promise) {
   return promise.then((links) => {
     const requests = links.map((objectLink) =>
-      fecthLink(objectLink.href).then((validationObject) => ({
+      fetchLink(objectLink.href).then((validationObject) => ({
         ...validationObject,
         ...objectLink,
       }))
