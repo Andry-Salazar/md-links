@@ -29,7 +29,9 @@ program
   .action((filePath, options) => {
     mdLinks(filePath, options).then(links => {
       links.forEach(link => {
-        console.log(`${link.file} ${link.href} ${link.text}`);
+        const validateOutput = options.validate ? ` ${link.ok} ${link.status}` : ""
+        const output = `${link.file} ${link.href}${validateOutput} "${link.text}"`;
+        console.log(output);
       });
     });
   });
