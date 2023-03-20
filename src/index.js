@@ -27,7 +27,8 @@ program
     'Genera una salida con estadísticas básicas sobre los links.'
   )
   .action((filePath, options) => {
-    mdLinks(filePath, options).then((data) => {
+    mdLinks(filePath, options)
+    .then((data) => {
       if (!options.stats) {
         data.forEach((link) => {
           const validateOutput = options.validate
@@ -43,6 +44,9 @@ program
           console.log(`Broken: ${data.broken}`);
         }
       }
+    })
+    .catch(err =>{
+      console.log('No existe el archivo');
     });
   });
-program.parse();
+  program.parse(process.argv);

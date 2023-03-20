@@ -1,9 +1,11 @@
+import { error } from 'console';
 import fs, { promises } from 'fs';
 
 export const mdLinks = (filePath, options) => {
-  console.log(`Existe la ruta? ${filePath} : ${fs.existsSync(filePath)}`);
-  // console.log(`Es Absoluta? ${path.isAbsolute(filePath)}`);
-  const linksPromise = getLinks(filePath).then(function (links) {
+  console.log(filePath);
+  console.log(`Existe el archivo? ${filePath} : ${fs.existsSync(filePath)}`);
+  const linksPromise = getLinks(filePath)
+  .then(function (links) {
     return links;
   });
 
