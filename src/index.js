@@ -44,9 +44,11 @@ program
           console.log(`Broken: ${data.broken}`);
         }
       }
+      process.exit(0);
     })
     .catch(err =>{
-      console.log('No existe el archivo');
+      console.error('No existe el archivo');
+      process.exit(1);
     });
   });
-  program.parse(process.argv);
+  program.parse();
