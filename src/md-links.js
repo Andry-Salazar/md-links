@@ -46,8 +46,8 @@ function routeExist(filePath) {
  }
 
 const mdLinks = (filePath, options) => {
-  console.log(filePath.slice(-3));
-  console.log(`Existe el archivo? ${filePath} : ${fs.existsSync(filePath)}`);
+  // console.log(filePath.slice(-3));
+  // console.log(`Existe el archivo? ${filePath} : ${fs.existsSync(filePath)}`);
   if (!routeExist(filePath)) {
     return Promise.reject(new Error("Error"));
   } 
